@@ -1,0 +1,39 @@
+name: Automate Preprocessing Coffee Sales
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'coffee_raw.csv'
+      - 'preprocessing/automate_Andika-Aryadi-Putra.py'
+
+jobs:
+  preprocessing:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          pip install pandas numpy scikit-learn statsmodels
+
+      - name: Run preprocessing
+        run: |
+          cd preprocessing
+          python automate_Andika-Aryadi-Putra.py
+
+      - name: Commit hasil preprocessing
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git add preprocessing/coffee_sales_preprocessing/
+          git commit -m "Auto: update preprocessing output" || echo "No changes to commit"
+          git push
